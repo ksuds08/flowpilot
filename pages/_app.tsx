@@ -9,6 +9,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         <Link href="/" style={{ marginRight: '1rem' }}>Home</Link>
         <Link href="/about" style={{ marginRight: '1rem' }}>About</Link>
         <Link href="/contact" style={{ marginRight: '1rem' }}>Contact</Link>
+              <Link href="/new" style={{ marginRight: '1rem' }}>New Workflow</Link>
         <Link href="/pricing">Pricing</Link>
       </nav>
       <Component {...pageProps} />
