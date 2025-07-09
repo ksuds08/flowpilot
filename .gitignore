@@ -1,0 +1,15 @@
+# Node
+node_modules
+.next
+out
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# Build outputs
+dist
+
+# Misc
+.DS_Store
