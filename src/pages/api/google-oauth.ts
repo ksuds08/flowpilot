@@ -1,5 +1,6 @@
 import { google } from 'googleapis';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { prisma } from '@/lib/prisma';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { code } = req.query;
@@ -22,6 +23,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const { tokens } = await oauth2Client.getToken(code as string);
-  // TODO: Persist tokens to DB linked to the current user
-  return res.status(200).json({ ok: true, tokens });
+
+  // TODO: replace with real user ID from your auth middleware
+  const userId = req.headers['x-user-id'] as string | undefined;
+  if (!userId) return res.status(401).json({ error: 'Unauthenticated' });
+
+  await prisma.userIntegration.upsert({
+    where: { userId_provider: { userId, provider: 'google' } },
+    update: {
+      accessToken: tokens.access_token || '',
+      refreshToken: tokens.refresh_token || '',
+      expiresAt: new Date(Date.now() + (tokens.expires_in || 0) * 1000)
+    },
+    create: {
+      provider: 'google',
+      userId,
+      accessToken: tokens.access_token || '',
+      refreshToken: tokens.refresh_token || '',
+      expiresAt: new Date(Date.now() + (tokens.expires_in || 0) * 1000)
+    }
+  });
+
+  return res.redirect('/dashboard?connected=google');
 }
