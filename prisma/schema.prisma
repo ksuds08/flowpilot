@@ -47,3 +47,14 @@ model Activity {
   projectId String
   createdAt DateTime @default(now())
 }
+/// NEW: stores OAuth tokens for Gmail, Outlook, etc.
+model UserIntegration {
+  id           String   @id @default(cuid())
+  provider     String   // "google" | "outlook"
+  accessToken  String
+  refreshToken String
+  expiresAt    DateTime
+  user         User     @relation(fields: [userId], references: [id])
+  userId       String
+  createdAt    DateTime @default(now())
+}
