@@ -12,7 +12,8 @@ model User {
   email     String   @unique
   name      String?
   clients   Client[]
-  projects  Project[]
+  projects  Pr
+      integrations     UserIntegration[]oject[]
   createdAt DateTime @default(now())
 }
 
